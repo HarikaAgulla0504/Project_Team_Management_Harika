@@ -1,6 +1,6 @@
-   {
-     "rewrites": [
-       { "source": "/api/:path*", "destination": "https://pm-api-xxxx.onrender.com/api/:path*" },
-       { "source": "/(.*)", "destination": "/index.html" }
-     ]
-   }
+{
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://project-team-management-harika-api.onrender.com/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
