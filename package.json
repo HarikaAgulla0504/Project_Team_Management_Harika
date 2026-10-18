@@ -1,0 +1,14 @@
+{
+  "name": "project-team-manager",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Project & Team Management System (React + Express + PostgreSQL)",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build": "npm --prefix client install && npm --prefix client run build && npm --prefix server install && npm --prefix server run build",
+    "start": "npm --prefix server run db:deploy && npm --prefix server start",
+    "test": "npm --prefix server test"
+  }
+}
