@@ -1,0 +1,6 @@
+   {
+     "rewrites": [
+       { "source": "/api/:path*", "destination": "https://pm-api-xxxx.onrender.com/api/:path*" },
+       { "source": "/(.*)", "destination": "/index.html" }
+     ]
+   }
