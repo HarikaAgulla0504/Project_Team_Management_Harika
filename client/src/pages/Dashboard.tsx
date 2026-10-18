@@ -1,19 +1,22 @@
 import { Link } from 'react-router-dom';
 import { api } from '../api/client';
-import { Badge, EmptyState, ErrorBox, Loading, ProgressBar } from '../components/ui';
 import { useAuth } from '../auth/AuthContext';
+import Icon, { IconName } from '../components/Icon';
+import { Badge, EmptyState, ErrorBox, Loading, ProgressBar } from '../components/ui';
 import { formatDate, isOverdue, label } from '../format';
 import { useFetch } from '../hooks/useFetch';
 import { DashboardSummary, TASK_STATUSES } from '../types';
 
-function Stat({ title, value, to, danger }: { title: string; value: number; to?: string; danger?: boolean }) {
-  const body = (
-    <div className={danger && value > 0 ? 'card stat stat-danger' : 'card stat'}>
-      <div className="stat-value">{value}</div>
-      <div className="muted">{title}</div>
-    </div>
+function Stat({ title, value, to, icon, tone }: { title: string; value: number; to: string; icon: IconName; tone: string }) {
+  return (
+    <Link to={to} className={`card stat tone-${tone} plain-link`}>
+      <span className="stat-icon"><Icon name={icon} size={22} /></span>
+      <div>
+        <div className="stat-value">{value}</div>
+        <div className="stat-title">{title}</div>
+      </div>
+    </Link>
   );
-  return to ? <Link to={to} className="plain-link">{body}</Link> : body;
 }
 
 export default function Dashboard() {
@@ -27,20 +30,25 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1>Welcome back, {user?.name.split(' ')[0]}</h1>
+      <div className="page-head">
+        <div>
+          <h1>Welcome back, {user?.name.split(' ')[0]} 👋</h1>
+          <p className="muted">Here is what is happening across your projects.</p>
+        </div>
+      </div>
 
       <div className="stats">
-        <Stat title="Total projects" value={s.totalProjects} to="/projects" />
-        <Stat title="Active projects" value={s.activeProjects} to="/projects?status=ACTIVE" />
-        <Stat title="Completed projects" value={s.completedProjects} to="/projects?status=COMPLETED" />
-        <Stat title="Total tasks" value={s.totalTasks} to="/tasks" />
-        <Stat title="Overdue tasks" value={s.overdueTasks} to="/tasks?overdue=true" danger />
-        <Stat title="My open tasks" value={s.myOpenTasks} to="/tasks?assigneeId=me" />
+        <Stat title="Total projects" value={s.totalProjects} to="/projects" icon="folder" tone="indigo" />
+        <Stat title="Active projects" value={s.activeProjects} to="/projects?status=ACTIVE" icon="play" tone="blue" />
+        <Stat title="Completed projects" value={s.completedProjects} to="/projects?status=COMPLETED" icon="check" tone="green" />
+        <Stat title="Total tasks" value={s.totalTasks} to="/tasks" icon="tasks" tone="violet" />
+        <Stat title="Overdue tasks" value={s.overdueTasks} to="/tasks?overdue=true" icon="alert" tone="red" />
+        <Stat title="My open tasks" value={s.myOpenTasks} to="/tasks?assigneeId=me" icon="user" tone="amber" />
       </div>
 
       <div className="grid-2">
         <section className="card">
-          <h2>Tasks by status</h2>
+          <h2><Icon name="activity" /> Tasks by status</h2>
           {s.totalTasks === 0 ? (
             <EmptyState title="No tasks yet" />
           ) : (
@@ -48,7 +56,7 @@ export default function Dashboard() {
               <div key={st} className="bar-row">
                 <span className="bar-label">{label(st)}</span>
                 <div className="bar-track">
-                  <div className="bar-fill" style={{ width: `${(s.tasksByStatus[st] / maxStatus) * 100}%` }} />
+                  <div className={`bar-fill bar-${st.toLowerCase()}`} style={{ width: `${(s.tasksByStatus[st] / maxStatus) * 100}%` }} />
                 </div>
                 <span className="bar-count">{s.tasksByStatus[st]}</span>
               </div>
@@ -57,7 +65,7 @@ export default function Dashboard() {
         </section>
 
         <section className="card">
-          <h2>My upcoming tasks</h2>
+          <h2><Icon name="user" /> My upcoming tasks</h2>
           {s.myTasks.length === 0 ? (
             <EmptyState title="Nothing assigned to you" hint="Tasks assigned to you will show up here." />
           ) : (
@@ -65,9 +73,11 @@ export default function Dashboard() {
               {s.myTasks.map((t) => (
                 <li key={t.id}>
                   <Link to={`/tasks/${t.id}`}>{t.title}</Link>
-                  <div className="muted">
-                    {t.project.name} · <Badge value={t.status} kind="status" /> ·{' '}
-                    <span className={isOverdue(t.dueDate, t.status) ? 'text-danger' : ''}>Due {formatDate(t.dueDate)}</span>
+                  <div className="muted small meta-line">
+                    {t.project.name} <Badge value={t.status} kind="status" />
+                    <span className={isOverdue(t.dueDate, t.status) ? 'text-danger' : ''}>
+                      <Icon name="calendar" size={13} /> {formatDate(t.dueDate)}
+                    </span>
                   </div>
                 </li>
               ))}
@@ -77,7 +87,7 @@ export default function Dashboard() {
       </div>
 
       <section className="card">
-        <h2>Project completion</h2>
+        <h2><Icon name="folder" /> Project completion</h2>
         {s.projectProgress.length === 0 ? (
           <EmptyState title="No projects yet" hint="Projects you belong to will appear here." />
         ) : (
@@ -86,7 +96,7 @@ export default function Dashboard() {
               <li key={p.id}>
                 <div className="row-between">
                   <Link to={`/projects/${p.id}`}>{p.name}</Link>
-                  <span className="muted">{p.done}/{p.total} tasks done · deadline {formatDate(p.deadline)}</span>
+                  <span className="muted small">{p.done}/{p.total} tasks done · deadline {formatDate(p.deadline)}</span>
                 </div>
                 <ProgressBar percent={p.percent} />
               </li>

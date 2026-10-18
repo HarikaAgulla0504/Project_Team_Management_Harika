@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Icon from '../components/Icon';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, qs } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
@@ -45,10 +46,10 @@ export default function Tasks() {
 
   return (
     <div>
-      <h1>Tasks</h1>
+      <h1><Icon name="tasks" size={26} /> Tasks</h1>
 
       <div className="filters">
-        <input placeholder="Search by title…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+        <div className="search"><Icon name="search" size={16} /><input placeholder="Search by title…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} /></div>
         <select value={f.projectId} onChange={(e) => setFilter('projectId', e.target.value)}>
           <option value="">All projects</option>
           {projects.data?.data.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}

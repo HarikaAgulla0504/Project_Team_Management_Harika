@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Icon from '../components/Icon';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, ApiError, qs } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
@@ -53,7 +54,7 @@ export default function ProjectDetail() {
 
   return (
     <div>
-      <p><Link to="/projects">← All projects</Link></p>
+      <p><Link to="/projects" className="back-link"><Icon name="back" size={16} /> All projects</Link></p>
       <div className="row-between">
         <h1>
           {p.name} <Badge value={p.status} kind="status" />
@@ -61,11 +62,11 @@ export default function ProjectDetail() {
         </h1>
         {canManage && (
           <div className="actions">
-            <button className="btn" onClick={() => setEditing(true)}>Edit</button>
+            <button className="btn" onClick={() => setEditing(true)}><Icon name="edit" size={16} /> Edit</button>
             {p.archivedAt ? (
-              <button className="btn" onClick={() => run(() => api.post(`/projects/${p.id}/unarchive`), 'Project restored.')}>Restore</button>
+              <button className="btn" onClick={() => run(() => api.post(`/projects/${p.id}/unarchive`), 'Project restored.')}><Icon name="restore" size={16} /> Restore</button>
             ) : (
-              <button className="btn" onClick={() => run(() => api.post(`/projects/${p.id}/archive`), 'Project archived.')}>Archive</button>
+              <button className="btn" onClick={() => run(() => api.post(`/projects/${p.id}/archive`), 'Project archived.')}><Icon name="archive" size={16} /> Archive</button>
             )}
             {hasRole('ADMIN') && (
               <button
@@ -80,7 +81,7 @@ export default function ProjectDetail() {
                   }
                 }}
               >
-                Delete
+                <Icon name="trash" size={16} /> Delete
               </button>
             )}
           </div>
@@ -93,7 +94,7 @@ export default function ProjectDetail() {
       <section className="card">
         <p>{p.description || <span className="muted">No description</span>}</p>
         <div className="muted">
-          {formatDate(p.startDate)} → {formatDate(p.deadline)} · Owner: {p.owner.name}
+          <Icon name="calendar" size={14} /> {formatDate(p.startDate)} → {formatDate(p.deadline)} · <Icon name="user" size={14} /> Owner: {p.owner.name}
         </div>
         <h3>Progress</h3>
         <ProgressBar percent={p.progress.percent} />
@@ -105,8 +106,8 @@ export default function ProjectDetail() {
 
       <section className="card">
         <div className="row-between">
-          <h2>Tasks</h2>
-          {canManage && !p.archivedAt && <button className="btn btn-primary" onClick={() => setAddingTask(true)}>+ New task</button>}
+          <h2><Icon name="tasks" /> Tasks</h2>
+          {canManage && !p.archivedAt && <button className="btn btn-primary" onClick={() => setAddingTask(true)}><Icon name="plus" size={16} /> New task</button>}
         </div>
         {tasks.loading && <Loading />}
         {tasks.error && <ErrorBox message={tasks.error} onRetry={tasks.reload} />}
@@ -134,7 +135,7 @@ export default function ProjectDetail() {
 
       <div className="grid-2">
         <section className="card">
-          <h2>Team ({p.members.length})</h2>
+          <h2><Icon name="users" /> Team ({p.members.length})</h2>
           <ul className="list">
             {p.members.map((m) => (
               <li key={m.id} className="row-between">
@@ -165,7 +166,7 @@ export default function ProjectDetail() {
         </section>
 
         <section className="card">
-          <h2>Recent activity</h2>
+          <h2><Icon name="activity" /> Recent activity</h2>
           <ActivityList items={p.activity} />
         </section>
       </div>

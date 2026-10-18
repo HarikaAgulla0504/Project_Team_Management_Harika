@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { Badge } from './ui';
+import { label } from '../format';
+import Icon from './Icon';
 
 export default function Layout() {
   const { user, logout, hasRole } = useAuth();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false); // mobile menu
+  const [open, setOpen] = useState(false); // mobile sidebar
 
   const handleLogout = async () => {
     await logout();
@@ -15,27 +16,43 @@ export default function Layout() {
   const link = ({ isActive }: { isActive: boolean }) => (isActive ? 'nav-link active' : 'nav-link');
 
   return (
-    <div className="app">
-      <header className="topbar">
-        <strong className="brand">Project &amp; Team Manager</strong>
-        <button className="btn btn-small menu-toggle" onClick={() => setOpen(!open)} aria-label="Toggle menu">
-          ☰
-        </button>
-        <nav className={open ? 'nav open' : 'nav'} onClick={() => setOpen(false)}>
-          <NavLink to="/" end className={link}>Dashboard</NavLink>
-          <NavLink to="/projects" className={link}>Projects</NavLink>
-          <NavLink to="/tasks" className={link}>Tasks</NavLink>
-          {hasRole('ADMIN') && <NavLink to="/users" className={link}>Users</NavLink>}
-        </nav>
-        <div className="user-box">
-          <span>{user?.name}</span>
-          {user && <Badge value={user.role} kind="role" />}
-          <button className="btn btn-small" onClick={handleLogout}>Log out</button>
+    <div className="shell">
+      {open && <div className="sidebar-backdrop" onClick={() => setOpen(false)} />}
+
+      <aside className={open ? 'sidebar open' : 'sidebar'}>
+        <div className="logo">
+          <span className="logo-mark"><Icon name="layers" size={20} /></span>
+          <span>Project Manager</span>
         </div>
-      </header>
-      <main className="content">
-        <Outlet />
-      </main>
+
+        <nav className="nav" onClick={() => setOpen(false)}>
+          <NavLink to="/" end className={link}><Icon name="dashboard" /> Dashboard</NavLink>
+          <NavLink to="/projects" className={link}><Icon name="folder" /> Projects</NavLink>
+          <NavLink to="/tasks" className={link}><Icon name="tasks" /> Tasks</NavLink>
+          {hasRole('ADMIN') && <NavLink to="/users" className={link}><Icon name="users" /> Users</NavLink>}
+        </nav>
+
+        <div className="sidebar-user">
+          <div className="avatar">{user?.name.charAt(0).toUpperCase()}</div>
+          <div className="sidebar-user-info">
+            <strong>{user?.name}</strong>
+            <small>{user ? label(user.role) : ''}</small>
+          </div>
+          <button className="icon-btn" onClick={handleLogout} title="Log out" aria-label="Log out">
+            <Icon name="logout" />
+          </button>
+        </div>
+      </aside>
+
+      <div className="main">
+        <header className="mobilebar">
+          <button className="icon-btn dark" onClick={() => setOpen(true)} aria-label="Open menu"><Icon name="menu" size={22} /></button>
+          <strong>Project Manager</strong>
+        </header>
+        <main className="content">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }

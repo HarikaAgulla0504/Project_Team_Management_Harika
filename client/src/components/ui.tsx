@@ -1,4 +1,5 @@
 import { ReactNode, useEffect } from 'react';
+import Icon from './Icon';
 import { Meta } from '../types';
 import { label } from '../format';
 
@@ -15,6 +16,7 @@ export function Loading({ text = 'Loading…' }: { text?: string }) {
 export function EmptyState({ title, hint, action }: { title: string; hint?: string; action?: ReactNode }) {
   return (
     <div className="state">
+      <span className="state-icon"><Icon name="inbox" size={26} /></span>
       <p className="state-title">{title}</p>
       {hint && <p className="muted">{hint}</p>}
       {action}
@@ -25,7 +27,7 @@ export function EmptyState({ title, hint, action }: { title: string; hint?: stri
 export function ErrorBox({ message, onRetry }: { message: string; onRetry?: () => void }) {
   return (
     <div className="alert alert-error" role="alert">
-      <span>{message}</span>
+      <span className="alert-text"><Icon name="alert" size={18} /> {message}</span>
       {onRetry && (
         <button className="btn btn-small" onClick={onRetry}>
           Retry
@@ -37,7 +39,7 @@ export function ErrorBox({ message, onRetry }: { message: string; onRetry?: () =
 
 export const SuccessBox = ({ message }: { message: string }) => (
   <div className="alert alert-success" role="status">
-    {message}
+    <Icon name="check" size={18} /> {message}
   </div>
 );
 
@@ -59,13 +61,13 @@ export function Pagination({ meta, onPage }: { meta: Meta; onPage: (page: number
   return (
     <div className="pagination">
       <button className="btn btn-small" disabled={meta.page <= 1} onClick={() => onPage(meta.page - 1)}>
-        ← Previous
+        <Icon name="left" size={14} /> Previous
       </button>
       <span>
         Page {meta.page} of {meta.totalPages} ({meta.total} results)
       </span>
       <button className="btn btn-small" disabled={meta.page >= meta.totalPages} onClick={() => onPage(meta.page + 1)}>
-        Next →
+        Next <Icon name="right" size={14} />
       </button>
     </div>
   );
@@ -85,7 +87,7 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
         <div className="modal-header">
           <h2>{title}</h2>
           <button className="btn btn-small" onClick={onClose} aria-label="Close">
-            ✕
+            <Icon name="x" size={14} />
           </button>
         </div>
         {children}

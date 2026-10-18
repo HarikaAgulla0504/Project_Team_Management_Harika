@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react';
+import Icon from '../components/Icon';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, ApiError } from '../api/client';
 import ActivityList from '../components/ActivityList';
@@ -68,12 +69,12 @@ export default function TaskDetail() {
 
   return (
     <div>
-      <p><Link to={`/projects/${t.project.id}`}>← {t.project.name}</Link></p>
+      <p><Link to={`/projects/${t.project.id}`} className="back-link"><Icon name="back" size={16} /> {t.project.name}</Link></p>
       <div className="row-between">
         <h1>{t.title}</h1>
         <div className="actions">
-          {t.permissions.canEdit && <button className="btn" onClick={() => setEditing(true)}>Edit</button>}
-          {t.permissions.canDelete && <button className="btn btn-danger" onClick={remove}>Delete</button>}
+          {t.permissions.canEdit && <button className="btn" onClick={() => setEditing(true)}><Icon name="edit" size={16} /> Edit</button>}
+          {t.permissions.canDelete && <button className="btn btn-danger" onClick={remove}><Icon name="trash" size={16} /> Delete</button>}
         </div>
       </div>
 
@@ -106,7 +107,7 @@ export default function TaskDetail() {
 
       <div className="grid-2">
         <section className="card">
-          <h2>Comments ({t.comments.length})</h2>
+          <h2><Icon name="message" /> Comments ({t.comments.length})</h2>
           {t.comments.length === 0 ? (
             <EmptyState title="No comments yet" hint="Start the conversation below." />
           ) : (
@@ -126,7 +127,7 @@ export default function TaskDetail() {
         </section>
 
         <section className="card">
-          <h2>Activity history</h2>
+          <h2><Icon name="activity" /> Activity history</h2>
           <ActivityList items={t.activity} />
         </section>
       </div>

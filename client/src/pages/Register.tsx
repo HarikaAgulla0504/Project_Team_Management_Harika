@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react';
+import Icon from '../components/Icon';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { ApiError } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
@@ -37,7 +38,9 @@ export default function Register() {
   return (
     <div className="auth-page">
       <form className="card auth-card form" onSubmit={submit}>
-        <h1>Create account</h1>
+        <div className="auth-logo"><Icon name="layers" size={28} /></div>
+        <h1>Create your account</h1>
+        <p className="muted">Join your team and start tracking work.</p>
         {error && <div className="alert alert-error" role="alert">{error}</div>}
         <Field label="Full name" error={errors.name}>
           <input value={form.name} onChange={set('name')} required minLength={2} autoComplete="name" />

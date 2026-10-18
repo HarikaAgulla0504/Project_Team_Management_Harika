@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react';
+import Icon from '../components/Icon';
 import { api, ApiError, qs } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { Badge, EmptyState, ErrorBox, Field, fieldErrors, Loading, Modal, Pagination } from '../components/ui';
@@ -75,14 +76,14 @@ export default function Users() {
   return (
     <div>
       <div className="row-between">
-        <h1>Users &amp; roles</h1>
-        <button className="btn btn-primary" onClick={() => setCreating(true)}>+ Add user</button>
+        <h1><Icon name="users" size={26} /> Users &amp; roles</h1>
+        <button className="btn btn-primary" onClick={() => setCreating(true)}><Icon name="plus" size={16} /> Add user</button>
       </div>
       {notice && <div className="alert alert-success">{notice}</div>}
       {actionError && <div className="alert alert-error">{actionError}</div>}
 
       <div className="filters">
-        <input placeholder="Search name or email…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+        <div className="search"><Icon name="search" size={16} /><input placeholder="Search name or email…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} /></div>
       </div>
 
       {loading && <Loading />}

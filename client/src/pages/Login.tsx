@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react';
+import Icon from '../components/Icon';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ApiError } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
@@ -37,7 +38,9 @@ export default function Login() {
   return (
     <div className="auth-page">
       <form className="card auth-card form" onSubmit={submit}>
-        <h1>Sign in</h1>
+        <div className="auth-logo"><Icon name="layers" size={28} /></div>
+        <h1>Welcome back</h1>
+        <p className="muted">Sign in to manage your projects and tasks.</p>
         {error && <div className="alert alert-error" role="alert">{error}</div>}
         <Field label="Email" error={errors.email}>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />

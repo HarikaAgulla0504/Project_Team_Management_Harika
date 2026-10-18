@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Icon from '../components/Icon';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, qs } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
@@ -37,16 +38,16 @@ export default function Projects() {
   return (
     <div>
       <div className="row-between">
-        <h1>{archived ? 'Archived projects' : 'Projects'}</h1>
+        <h1><Icon name="folder" size={26} /> {archived ? 'Archived projects' : 'Projects'}</h1>
         {hasRole('ADMIN', 'PROJECT_MANAGER') && (
-          <button className="btn btn-primary" onClick={() => setShowForm(true)}>+ New project</button>
+          <button className="btn btn-primary" onClick={() => setShowForm(true)}><Icon name="plus" size={16} /> New project</button>
         )}
       </div>
 
       {notice && <div className="alert alert-success">{notice}</div>}
 
       <div className="filters">
-        <input placeholder="Search projects…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+        <div className="search"><Icon name="search" size={16} /><input placeholder="Search projects…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} /></div>
         <select value={status} onChange={(e) => setFilter('status', e.target.value)}>
           <option value="">All statuses</option>
           {PROJECT_STATUSES.map((s) => <option key={s} value={s}>{label(s)}</option>)}
@@ -66,7 +67,7 @@ export default function Projects() {
           <>
             <div className="cards">
               {data.data.map((p) => (
-                <Link key={p.id} to={`/projects/${p.id}`} className="card project-card plain-link">
+                <Link key={p.id} to={`/projects/${p.id}`} className={`card project-card plain-link status-${p.status.toLowerCase()}`}>
                   <div className="row-between">
                     <h3>{p.name}</h3>
                     <Badge value={p.status} kind="status" />
@@ -74,7 +75,7 @@ export default function Projects() {
                   <p className="muted clamp">{p.description || 'No description'}</p>
                   <ProgressBar percent={p.progress.percent} />
                   <div className="muted small">
-                    {p._count.tasks} tasks · {p._count.members} members · due {formatDate(p.deadline)}
+                    <Icon name="tasks" size={13} /> {p._count.tasks} tasks · <Icon name="users" size={13} /> {p._count.members} · <Icon name="calendar" size={13} /> {formatDate(p.deadline)}
                   </div>
                   <div className="muted small">Owner: {p.owner.name}</div>
                 </Link>
